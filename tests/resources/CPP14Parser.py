@@ -14151,7 +14151,8 @@ class CPP14Parser ( Parser ):
             self.match(CPP14Parser.Assign)
             self.state = 1783
             localctx.val = self.match(CPP14Parser.OctalLiteral)
-            if((None if localctx.val is None else localctx.val.text).compareTo("0")!=0) throw new InputMismatchException(this);
+            if((None if localctx.val is None else localctx.val.text).compareTo("0")!=0):
+                raise InputMismatchException(this);
             		
         except RecognitionException as re:
             localctx.exception = re
