@@ -51,3 +51,6 @@ fwdindex/*
 index_nofilter/*
 output*
 /bin/
+
+.vscode/
+__pycache__/
