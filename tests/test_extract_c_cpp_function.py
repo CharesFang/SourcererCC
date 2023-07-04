@@ -2,6 +2,7 @@ import os
 import config
 import unittest
 from tests.code import extractPythonFunction
+from tests.code.extractCPPFunction import ExtractCPPFunction
 
 
 class TestExtractPythonFunction(unittest.TestCase):
@@ -24,4 +25,13 @@ class TestExtractPythonFunction(unittest.TestCase):
 
         # function strings: List[str]
         print("\n".join(strings))
-        
+
+
+class TestExtractCPPFunction(unittest.TestCase):
+    def setUp(self) -> None:
+        self.cpp_extractor = ExtractCPPFunction()
+        self.test_c_file = os.path.join(config.TEST_RESOURCES_DIR, "adcxx1c.c")
+        return super().setUp()
+    
+    def test_get_cpp_functions(self):
+        self.cpp_extractor.get_functions(self.test_c_file)
