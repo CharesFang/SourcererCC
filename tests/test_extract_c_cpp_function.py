@@ -34,4 +34,12 @@ class TestExtractCPPFunction(unittest.TestCase):
         return super().setUp()
     
     def test_get_cpp_functions(self):
-        self.cpp_extractor.get_functions(self.test_c_file)
+        block_linenos, functions = self.cpp_extractor.get_functions(self.test_c_file)
+
+        assert block_linenos
+        assert functions
+
+        for (start, end), function_string in zip(block_linenos, functions):
+            print(f"block {start}-{end}:")
+            print(function_string)
+

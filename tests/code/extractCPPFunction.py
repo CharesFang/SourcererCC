@@ -1,17 +1,11 @@
 import antlr4
 import typing as T
-from tests.resources.CPP14Lexer import CPP14Lexer
-from tests.resources.CPP14Parser import CPP14Parser
-from tests.resources.CPP14ParserVisitor import CPP14ParserVisitor
-from tests.resources.CPP14ParserListener import CPP14ParserListener
-
-
-# class CPP14Visitor(CPP14ParserVisitor):
+from resources.CPP14Lexer import CPP14Lexer
+from resources.CPP14Parser import CPP14Parser
+from resources.CPP14ParserListener import CPP14ParserListener
 
 
 class ExtractCPPFunction:
-    def __init__(self) -> None:
-        pass
 
     def read_source(self, file: str) -> str:
         with open(file, "r") as f:
@@ -20,18 +14,27 @@ class ExtractCPPFunction:
     def get_functions(self, file_path: str) -> T.Tuple[T.List[T.Tuple[int, int]], T.List[str]]:
         source_file_string = self.read_source(file_path)
 
+        # read the the source code
         input_stream = antlr4.InputStream(source_file_string)
+        # lex the source code
         lexer = CPP14Lexer(input_stream)
+        # convert and process the first-round source code tokens
         stream = antlr4.CommonTokenStream(lexer)
+        # leverage Parser to parse the tokens
         parser = CPP14Parser(stream)
-
+        # get the AST
         ast = parser.translationUnit()
 
+        # use the listener to extract and record our results.
         listener = FunctionListener()
 
+        # introduce a walker to traverse the AST
         walker = antlr4.ParseTreeWalker()
 
         walker.walk(listener, ast)
+
+        # Return the results we want.
+        return (listener.block_linenos, listener.functions)
 
 
 class FunctionListener(CPP14ParserListener):
@@ -49,6 +52,3 @@ class FunctionListener(CPP14ParserListener):
         self.functions.append(f"{function_name}\n{function_body}")
 
         self.block_linenos.append((start_line, end_line))
-
-        # print(f"function name: {function_name}, function body: {function_body}")
-        # print(f"start line: {start_line}, end line: {end_line}")
